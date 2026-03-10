@@ -8,16 +8,22 @@ metadata:
     requires:
       bins: ["engram"]
       env: []
+    platforms:
+      - macOS
+      - Linux
+      - Windows
     install:
       - id: brew
         kind: brew
         formula: gentleman-programming/tap/engram
         bins: ["engram"]
         label: Install via Homebrew (macOS/Linux)
+        platforms: ["macOS", "Linux"]
       - id: binary
         kind: manual
         label: Download binary from GitHub Releases
         url: https://github.com/Gentleman-Programming/engram/releases
+        platforms: ["macOS", "Linux", "Windows"]
 ---
 
 # Engram - Memoria Persistente para Agentes IA
@@ -60,17 +66,33 @@ El agente evalúa el contexto y decide:
 
 ## Setup (Requerido Una Vez)
 
-Antes de usar este skill, Engram debe estar registrado en MCPorter:
+### Instalar Engram
+
+**macOS / Linux (Homebrew):**
+```bash
+brew install gentleman-programming/tap/engram
+```
+
+**Windows:**
+1. Descargar `engram-windows-amd64.exe` desde [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases)
+2. Renombrar a `engram.exe`
+3. Agregar al PATH del sistema
+4. Verificar: `engram version`
+
+**macOS / Linux (binario manual):**
+```bash
+# Descargar desde GitHub Releases
+chmod +x engram
+sudo mv engram /usr/local/bin/
+```
+
+### Registrar en MCPorter
 
 ```bash
-# 1. Instalar Engram (elige uno)
-brew install gentleman-programming/tap/engram
-# O descargar de: https://github.com/Gentleman-Programming/engram/releases
-
-# 2. Registrar servidor MCP de Engram en MCPorter
+# Registrar servidor MCP de Engram
 mcporter config add engram --stdio "engram mcp"
 
-# 3. Verificar instalación
+# Verificar instalación (debe mostrar 13 herramientas)
 mcporter list engram
 ```
 
@@ -520,14 +542,25 @@ mcporter call engram.mem_save \
 
 ### Error: "engram: command not found"
 
+**Verificar instalación:**
+
 ```bash
-# Verificar instalación
+# macOS / Linux
 which engram
 
-# Si no está instalado:
-brew install gentleman-programming/tap/engram
+# Windows (PowerShell)
+where.exe engram
 
-# Verificar versión
+# Windows (CMD)
+where engram
+```
+
+**Solución:**
+- **macOS/Linux**: `brew install gentleman-programming/tap/engram`
+- **Windows**: Descargar de [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases) y agregar al PATH
+
+**Verificar versión:**
+```bash
 engram version
 ```
 
@@ -739,6 +772,17 @@ Envuelve contenido sensible en tags `<private>` - se eliminan antes de guardar:
 API key: <private>sk-abc123</private>
 → API key: [REDACTED]
 ```
+
+---
+
+## 📁 Ubicación de Datos
+
+| Plataforma | Ruta |
+|------------|------|
+| **macOS / Linux** | `~/.engram/engram.db` |
+| **Windows** | `%USERPROFILE%\.engram\engram.db` |
+
+**Override**: Set `ENGRAM_DATA_DIR` environment variable para cambiar la ubicación.
 
 ---
 

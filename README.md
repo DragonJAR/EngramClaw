@@ -15,14 +15,19 @@ Permite que los agentes recuerden entre sesiones:
 
 ## Instalación
 
+**macOS / Linux:**
 ```bash
-# 1. Instalar Engram
 brew install gentleman-programming/tap/engram
+```
 
-# 2. Registrar en MCPorter
+**Windows:**
+1. Descargar desde [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases)
+2. Agregar `engram.exe` al PATH
+3. Verificar: `engram version`
+
+**Registrar en MCPorter (todas las plataformas):**
+```bash
 mcporter config add engram --stdio "engram mcp"
-
-# 3. Verificar
 mcporter list engram
 ```
 
@@ -57,6 +62,7 @@ Implementar autenticación JWT
 
 | Característica | Descripción |
 |----------------|-------------|
+| **Multiplataforma** | macOS, Linux, Windows |
 | **Memoria curada** | El agente decide qué guardar, no captura automática |
 | **Revelación progresiva** | Search → Timeline → Full content (eficiente en tokens) |
 | **Búsqueda FTS5** | Full-text search en SQLite |
