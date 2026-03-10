@@ -15,20 +15,44 @@ Permite que los agentes recuerden entre sesiones:
 
 ## Instalación
 
+### Prerrequisitos
+
+Este skill requiere dos binarios:
+
+| Herramienta | Propósito | Repo |
+|-------------|-----------|------|
+| **MCPorter** | Cliente MCP | [steipete/mcporter](https://github.com/steipete/mcporter) |
+| **Engram** | Backend de memoria | [Gentleman-Programming/engram](https://github.com/Gentleman-Programming/engram) |
+
+### Paso 1: Instalar MCPorter
+
+**macOS / Linux:**
+```bash
+brew tap steipete/tap
+brew install steipete/tap/mcporter
+```
+
+**Todas las plataformas (npm):**
+```bash
+npm install -g mcporter
+```
+
+**Windows (binario):** Descargar de [GitHub Releases](https://github.com/steipete/mcporter/releases)
+
+### Paso 2: Instalar Engram
+
 **macOS / Linux:**
 ```bash
 brew install gentleman-programming/tap/engram
 ```
 
-**Windows:**
-1. Descargar desde [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases)
-2. Agregar `engram.exe` al PATH
-3. Verificar: `engram version`
+**Windows:** Descargar de [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases) y agregar al PATH
 
-**Registrar en MCPorter (todas las plataformas):**
+### Paso 3: Conectar
+
 ```bash
 mcporter config add engram --stdio "engram mcp"
-mcporter list engram
+mcporter list engram  # Debe mostrar 13 herramientas
 ```
 
 ## Quick Start

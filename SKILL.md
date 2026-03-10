@@ -6,22 +6,34 @@ metadata:
   openclaw:
     emoji: "🧠"
     requires:
-      bins: ["engram"]
+      bins: ["mcporter", "engram"]
       env: []
     platforms:
       - macOS
       - Linux
       - Windows
     install:
-      - id: brew
+      - id: mcporter-npm
+        kind: npm
+        package: mcporter
+        bins: ["mcporter"]
+        label: Install MCPorter via npm (all platforms)
+        platforms: ["macOS", "Linux", "Windows"]
+      - id: mcporter-brew
+        kind: brew
+        formula: steipete/tap/mcporter
+        bins: ["mcporter"]
+        label: Install MCPorter via Homebrew (macOS/Linux)
+        platforms: ["macOS", "Linux"]
+      - id: engram-brew
         kind: brew
         formula: gentleman-programming/tap/engram
         bins: ["engram"]
-        label: Install via Homebrew (macOS/Linux)
+        label: Install Engram via Homebrew (macOS/Linux)
         platforms: ["macOS", "Linux"]
-      - id: binary
+      - id: engram-binary
         kind: manual
-        label: Download binary from GitHub Releases
+        label: Download Engram binary from GitHub Releases
         url: https://github.com/Gentleman-Programming/engram/releases
         platforms: ["macOS", "Linux", "Windows"]
 ---
@@ -64,7 +76,41 @@ El agente evalúa el contexto y decide:
 
 ---
 
-## Setup (Requerido Una Vez)
+## ⚙️ Prerrequisitos
+
+Este skill requiere dos binarios instalados:
+
+| Herramienta | Propósito | Repositorio |
+|-------------|-----------|-------------|
+| **MCPorter** | Cliente MCP para ejecutar herramientas | [steipete/mcporter](https://github.com/steipete/mcporter) |
+| **Engram** | Backend de memoria persistente | [Gentleman-Programming/engram](https://github.com/Gentleman-Programming/engram) |
+
+### Instalar MCPorter
+
+**macOS / Linux (Homebrew):**
+```bash
+brew tap steipete/tap
+brew install steipete/tap/mcporter
+```
+
+**Todas las plataformas (npm):**
+```bash
+# Sin instalación (para probar)
+npx mcporter --version
+
+# Instalación global
+npm install -g mcporter
+```
+
+**Windows (binario):**
+1. Descargar `mcporter-<version>.exe` desde [GitHub Releases](https://github.com/steipete/mcporter/releases)
+2. Renombrar a `mcporter.exe`
+3. Agregar al PATH del sistema
+
+**Verificar:**
+```bash
+mcporter --version
+```
 
 ### Instalar Engram
 
@@ -73,27 +119,34 @@ El agente evalúa el contexto y decide:
 brew install gentleman-programming/tap/engram
 ```
 
-**Windows:**
-1. Descargar `engram-windows-amd64.exe` desde [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases)
-2. Renombrar a `engram.exe`
-3. Agregar al PATH del sistema
-4. Verificar: `engram version`
+**Todas las plataformas (binario):**
+1. Descargar desde [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases)
+2. **Windows**: Renombrar a `engram.exe` y agregar al PATH
+3. **macOS/Linux**: `chmod +x engram && sudo mv engram /usr/local/bin/`
 
-**macOS / Linux (binario manual):**
+**Verificar:**
 ```bash
-# Descargar desde GitHub Releases
-chmod +x engram
-sudo mv engram /usr/local/bin/
+engram version
 ```
 
-### Registrar en MCPorter
+---
+
+## Setup (Conectar MCPorter con Engram)
+
+Una vez instalados ambos binarios, registrar Engram como servidor MCP:
 
 ```bash
 # Registrar servidor MCP de Engram
 mcporter config add engram --stdio "engram mcp"
 
-# Verificar instalación (debe mostrar 13 herramientas)
+# Verificar conexión (debe mostrar 13 herramientas)
 mcporter list engram
+```
+
+**Resultado esperado:**
+```
+engram - Sistema de memoria persistente para agentes IA
+  13 tools · HTTP/stdio
 ```
 
 ## Conceptos Core
@@ -540,6 +593,26 @@ mcporter call engram.mem_save \
 
 ## 🔧 Troubleshooting
 
+### Error: "mcporter: command not found"
+
+**Verificar instalación:**
+
+```bash
+# macOS / Linux
+which mcporter
+
+# Windows (PowerShell)
+where.exe mcporter
+```
+
+**Solución:**
+
+| Plataforma | Comando |
+|------------|---------|
+| macOS/Linux (Homebrew) | `brew install steipete/tap/mcporter` |
+| Todas (npm) | `npm install -g mcporter` |
+| Windows (binario) | Descargar de [GitHub Releases](https://github.com/steipete/mcporter/releases) |
+
 ### Error: "engram: command not found"
 
 **Verificar instalación:**
@@ -550,27 +623,42 @@ which engram
 
 # Windows (PowerShell)
 where.exe engram
-
-# Windows (CMD)
-where engram
 ```
 
 **Solución:**
-- **macOS/Linux**: `brew install gentleman-programming/tap/engram`
-- **Windows**: Descargar de [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases) y agregar al PATH
+
+| Plataforma | Comando |
+|------------|---------|
+| macOS/Linux (Homebrew) | `brew install gentleman-programming/tap/engram` |
+| Windows (binario) | Descargar de [GitHub Releases](https://github.com/Gentleman-Programming/engram/releases) |
 
 **Verificar versión:**
 ```bash
 engram version
 ```
 
+### Error: "No MCP servers configured" o "server 'engram' not found"
+
+MCPorter está instalado pero Engram no está registrado.
+
+**Solución:**
+```bash
+# Registrar Engram como servidor MCP
+mcporter config add engram --stdio "engram mcp"
+
+# Verificar
+mcporter list engram
+```
+
 ### Error: "MCPorter not configured"
 
+**Verificar registro:**
 ```bash
-# Verificar registro
 mcporter list engram
+```
 
-# Si falla, registrar nuevamente:
+**Si falla, registrar nuevamente:**
+```bash
 mcporter config add engram --stdio "engram mcp"
 
 # Verificar tools disponibles (deben ser 13)
